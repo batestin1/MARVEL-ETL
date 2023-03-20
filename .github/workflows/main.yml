@@ -8,7 +8,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    uses: hashicorp/setup-terraform@v1
+    - uses: ./.github/workflows/main.yml
     steps:
       - name: Testing
         with:
