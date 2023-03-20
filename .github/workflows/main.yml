@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  uses: hashicorp/setup-terraform@v1
   terraform:
     runs-on: ubuntu-latest
+    uses: hashicorp/setup-terraform@v1
     steps:
       - name: Testing
         with:
