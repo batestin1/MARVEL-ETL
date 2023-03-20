@@ -17,6 +17,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: sa-east-1
 
       - name: Terraform Init
         run: |
@@ -25,14 +26,14 @@ jobs:
 
       - name: Terraform Validate
         run: |
-            cd infra
-            terraform validate
+          cd infra
+          terraform validate
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-            cd infra 
-            terraform apply -auto-approve
+          cd infra 
+          terraform apply -auto-approve
 
       - name: Confirm Destruction
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
