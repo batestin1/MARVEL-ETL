@@ -9,32 +9,30 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      - name: Testing
         with:
           terraform_version: 1.0.9
-
-      - name: Testing
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           terraform init
           terraform validate
 
       - name: Apply
-        if: success()
+        with:
+          terraform_version: 1.0.9
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          terraform init
           terraform apply -auto-approve
 
       - name: Destroy
         if: github.ref == 'refs/heads/main'
-        needs: apply
+        depends_on: 
+          - Apply
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          terraform init
           terraform destroy -auto-approve
