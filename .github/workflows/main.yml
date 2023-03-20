@@ -17,21 +17,27 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd infra
+          terraform init
 
       - name: Terraform Validate
-        run: terraform validate
+        run: |
+            cd infra
+            terraform validate
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+        run: |
+            cd infra 
+            terraform apply -auto-approve
 
       - name: Confirm Destruction
         if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
         run: |
+          cd infra
           echo "Are you sure you want to destroy the infrastructure?"
           read -p "Enter 'yes' to continue: " input
           if [ "$input" == "yes" ]; then
