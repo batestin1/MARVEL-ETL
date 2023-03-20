@@ -23,7 +23,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Validate
-        run: terraform Validate
+        run: terraform validate
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
