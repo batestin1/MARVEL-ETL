@@ -1,26 +1,39 @@
-- name: Testing
-  uses: hashicorp/setup-terraform@v1
-  with:
-    terraform_version: 1.0.9
-  run: |
-    terraform init
-    terraform validate
-- name: Apply
-  uses: hashicorp/setup-terraform@v1
-  with:
-    terraform_version: 1.0.9
-  env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  run: |
-    terraform init
-    terraform apply -auto-approve
-- name: Destroy
-  if: github.ref == 'refs/heads/main'
-  needs: deploy
-  env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  run: |
-    terraform init
-    terraform destroy -auto-approve
+name: Terraform Actions
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testing
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.9
+        run: |
+          terraform init
+          terraform validate
+
+      - name: Apply
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.9
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Destroy
+        if: github.ref == 'refs/heads/main'
+        needs: apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          terraform init
+          terraform destroy -auto-approve
