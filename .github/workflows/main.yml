@@ -13,7 +13,11 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.9
-                    
+        # Remova a chave "run"
+        # run: |
+        #   terraform init
+        #   terraform validate
+
       - name: Apply
         uses: hashicorp/setup-terraform@v1
         with:
